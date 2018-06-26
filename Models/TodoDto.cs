@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace Todos_dotnet.Models
 {
+	// Todos for display:
     public class TodoDto
     {
 		public int TodoId { get; set; }

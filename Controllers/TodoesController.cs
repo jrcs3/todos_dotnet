@@ -37,9 +37,7 @@ namespace Todos_dotnet.Controllers
         [HttpGet]
         public IEnumerable<TodoDto> GetTodo()
 		{
-			//return _context.Todo.Include(x => x.Person);
 			return _context.Todo.Include(x => x.Person).Select(AsTodoDto);
-			//return _context.Todo;
 		}
 
         // GET: api/Todoes/5
@@ -51,8 +49,6 @@ namespace Todos_dotnet.Controllers
                 return BadRequest(ModelState);
             }
 
-			//var todo = await _context.Todo.Include(x => x.Person).SingleOrDefaultAsync(m => m.TodoId == id);
-			//var todo = await _context.Todo.SingleOrDefaultAsync(m => m.TodoId == id);
 			var todo = await _context.Todo.Include(x => x.Person).Where(x => x.TodoId == id).Select(AsTodoDto).FirstOrDefaultAsync();
 
 			if (todo == null)
@@ -63,8 +59,8 @@ namespace Todos_dotnet.Controllers
             return Ok(todo);
         }
 
-        // PUT: api/Todoes/5
-        [HttpPut("{id}")]
+		// PUT: api/Todoes/5
+		[HttpPut("{id}")]
         public async Task<IActionResult> PutTodo([FromRoute] int id, [FromBody] Todo todo)
         {
             if (!ModelState.IsValid)
@@ -138,5 +134,14 @@ namespace Todos_dotnet.Controllers
         {
             return _context.Todo.Any(e => e.TodoId == id);
         }
-    }
+
+		// Custom Route(s)
+		// GET: api/Todoes/person/5
+		[HttpGet("person/{id}")]
+		public IEnumerable<TodoDto> GetTodoByPerson([FromRoute] int id)
+		{
+			return _context.Todo.Include(x => x.Person).Where(x => x.PersonId == id).Select(AsTodoDto);
+		}
+
+	}
 }
